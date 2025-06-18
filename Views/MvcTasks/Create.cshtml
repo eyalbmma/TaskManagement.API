@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "יצירת משימה חדשה";
+}
+@{
+    var users = ViewBag.Users as List<TaskManagement.API.Models.User>;
+    var allTasks = ViewBag.AllTasks as List<TaskManagement.API.Models.Task>;
+}
+
+<nav style="background-color: #f0f0f0; padding: 10px; margin-bottom: 20px;">
+    <a href="@Url.Action("Index", "MvcTasks")">🏠 כל המשימות</a> |
+    <a href="@Url.Action("Create", "MvcTasks")">➕ צור משימה</a> |
+
+    <form method="get" action="@Url.Action("Index", "MvcTasks")" style="display: inline;">
+        <label>בחר משתמש:</label>
+        <select name="userId" onchange="this.form.submit()">
+            <option value="">-- בחר --</option>
+            @if (users != null)
+            {
+                foreach (var user in users)
+                {
+                    <option value="@user.Id">@user.FullName</option>
+                }
+            }
+        </select>
+    </form>
+
+    <form method="get" action="@Url.Action("EditData", "MvcTasks")" style="display: inline; margin-right: 15px;">
+        <label>ערוך משימה:</label>
+        <select name="id" onchange="this.form.submit()">
+            <option value="">-- בחר --</option>
+            @if (allTasks != null)
+            {
+                foreach (var task in allTasks)
+                {
+                    <option value="@task.Id">#@task.Id - @task.TaskType</option>
+                }
+            }
+        </select>
+    </form>
+</nav>
+
+<h2>יצירת משימה חדשה</h2>
+
+<form method="post" action="/MvcTasks/Create">
+    @Html.AntiForgeryToken()
+
+    <label>סוג משימה:</label>
+    <select name="TaskType">
+        <option value="Procurement">רכש</option>
+        <option value="Development">פיתוח</option>
+    </select>
+    <br />
+
+   
+    <label>משתמש מוקצה:</label>
+    <select name="AssignedUserId">
+        <option value="">-- בחר משתמש --</option>
+        @if (users != null)
+        {
+            foreach (var user in users)
+            {
+                <option value="@user.Id">@user.FullName (@user.Id)</option>
+            }
+        }
+    </select>
+    <br />
+
+    <button type="submit">צור</button>
+</form>
