@@ -88,6 +88,7 @@ namespace TaskManagement.API.Controllers
             return result ? Ok("Status updated") : BadRequest("Invalid transition");
         }
         [HttpGet("{id}")]
+        
         public async Task<IActionResult> GetTaskById(int id)
         {
             var task = await _context.Tasks
@@ -98,8 +99,29 @@ namespace TaskManagement.API.Controllers
             if (task == null)
                 return NotFound(new { error = "Task not found" });
 
-            return Ok(task);
+            var dto = new TaskDto
+            {
+                Id = task.Id,
+                TaskType = task.TaskType,
+                IsClosed = task.IsClosed,
+                Status = task.Status,
+                DevelopmentData = task.DevelopmentData == null ? null : new DevelopmentDataDto
+                {
+                    Specification = task.DevelopmentData.Specification,
+                    BranchName = task.DevelopmentData.BranchName,
+                    Version = task.DevelopmentData.Version
+                },
+                ProcurementData = task.ProcurementData == null ? null : new ProcurementDataDto
+                {
+                    Offer1 = task.ProcurementData.Offer1,
+                    Offer2 = task.ProcurementData.Offer2,
+                    Receipt = task.ProcurementData.Receipt
+                }
+            };
+
+            return Ok(dto);
         }
+
 
         [HttpPost("{taskId}/close")]
         public async Task<IActionResult> CloseTask(int taskId)

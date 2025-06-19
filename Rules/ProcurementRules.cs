@@ -4,7 +4,7 @@ namespace TaskManagement.API.Rules
 {
     public class ProcurementRules : ITaskRules
     {
-        public int FinalStatus => 3;
+        public int FinalStatus => 4; // ← תיקון כאן
 
         public bool CanMoveForward(TaskEntity task)
         {
@@ -15,6 +15,7 @@ namespace TaskManagement.API.Rules
                 1 => !string.IsNullOrWhiteSpace(task.ProcurementData.Offer1) &&
                      !string.IsNullOrWhiteSpace(task.ProcurementData.Offer2),
                 2 => !string.IsNullOrWhiteSpace(task.ProcurementData.Receipt),
+                3 => true, // מ־3 ל־4
                 _ => false
             };
         }
@@ -26,7 +27,14 @@ namespace TaskManagement.API.Rules
 
         public bool CanClose(TaskEntity task)
         {
-            return task.Status == FinalStatus;
+            if (task.ProcurementData == null) return false;
+
+            return task.Status == 4 &&
+                   !string.IsNullOrWhiteSpace(task.ProcurementData.Offer1) &&
+                   !string.IsNullOrWhiteSpace(task.ProcurementData.Offer2) &&
+                   !string.IsNullOrWhiteSpace(task.ProcurementData.Receipt);
         }
+
     }
+
 }

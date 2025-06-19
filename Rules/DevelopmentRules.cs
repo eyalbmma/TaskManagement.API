@@ -26,7 +26,13 @@ namespace TaskManagement.API.Rules
 
         public bool CanClose(TaskEntity task)
         {
-            return task.Status == FinalStatus;
+            if (task.DevelopmentData == null) return false;
+
+            return task.Status == 4 &&
+                   !string.IsNullOrWhiteSpace(task.DevelopmentData.Specification) &&
+                   !string.IsNullOrWhiteSpace(task.DevelopmentData.BranchName) &&
+                   !string.IsNullOrWhiteSpace(task.DevelopmentData.Version);
         }
+
     }
 }

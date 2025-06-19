@@ -16,20 +16,19 @@ namespace TaskManagement.API.Services
         [HttpGet]
 
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllTasks()
+        public async Task<List<Models.Task>> GetAllTasksAsync()
         {
             var tasks = await _context.Tasks
                 .Include(t => t.ProcurementData)
                 .Include(t => t.DevelopmentData)
                 .ToListAsync();
 
-            return Ok(tasks);
+            return tasks;
         }
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
             var users = await _context.Users.ToListAsync();
-            return Ok(users);
+            return users;
         }
         public async Task<List<Models.Task>> GetTasksForUserAsync(int userId)
         {
