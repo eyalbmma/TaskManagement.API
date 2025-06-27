@@ -63,15 +63,15 @@ namespace TaskManagement.API.Controllers
         public async Task<IActionResult> EditProcurement(
     int id,
     [FromForm] UpdateProcurementDataDto dto,
-    [FromServices] ProcurementDataUpdater updater,
-    [FromServices] AppDbContext context)
+    [FromServices] ProcurementDataUpdater updater
+    )
         {
             var success = await updater.UpdateAsync(id, dto);
 
             if (success)
             {
                 // שולף את המשתמש שהוקצתה לו המשימה
-                var task = await context.Tasks.FindAsync(id);
+                var task = await _context.Tasks.FindAsync(id);
                 var userId = task?.AssignedUserId ?? 1; // ברירת מחדל ל־1 אם משום מה לא קיים
 
                 return RedirectToAction("Index", new { userId });
@@ -87,15 +87,15 @@ namespace TaskManagement.API.Controllers
         public async Task<IActionResult> EditDevelopment(
      int id,
      [FromForm] UpdateDevelopmentDataDto dto,
-     [FromServices] DevelopmentDataUpdater updater,
-     [FromServices] AppDbContext context)
+     [FromServices] DevelopmentDataUpdater updater
+    )
         {
             var success = await updater.UpdateAsync(id, dto);
 
             if (success)
             {
                 // שולף את המשתמש שהוקצה לו
-                var task = await context.Tasks.FindAsync(id);
+                var task = await _context.Tasks.FindAsync(id);
                 var userId = task?.AssignedUserId ?? 1;
 
                 return RedirectToAction("Index", new { userId });
